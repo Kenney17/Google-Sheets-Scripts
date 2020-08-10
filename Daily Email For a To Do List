@@ -1,0 +1,46 @@
+function sendDailyEmail() {
+  var spreadsheet = SpreadsheetApp.getActive()
+  var sheet = spreadsheet.getSheets()[0]
+  //limits function to run only to the last used row
+  var lastRow = sheet.getLastRow()
+  //email address
+  var emailAddress = "'Destination Email'"
+  //date for email
+  var date = Utilities.formatDate(new Date(), "America/Los_Angeles (Pacific time)", "MMMM dd, YYYY")
+  //subject line of email
+  var subject = "To Do List "+date
+  //creates an array to record the loops outputs
+  var messages = []
+  //i = current row and is set to go row by row
+  for(var i = 11;i <= lastRow;i++) {
+    var priority = sheet.getRange(i, 5).getValue()
+    var status = sheet.getRange(i, 6).getValue()
+  //if statement to grab correct line priority does not = null, status does not = complete, delayed
+    if(priority != '' && status != 'Completed' && status != 'Delayed'){
+      var message = sheet.getRange(i, 1, 1, 9).getDisplayValues()[0]
+      messages.push(message)
+    }
+  }
+  var htmlTemplate = HtmlService.createTemplateFromFile('Email')
+  htmlTemplate.messages = messages
+  const htmlForEmail = htmlTemplate.evaluate().getContent()
+  MailApp.sendEmail(emailAddress, subject, "Please open this email with a client that supports HTML", {htmlBody: htmlForEmail})
+}
+
+//Put the HTML below in a new file and name it "Email"
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+  </head>
+  <body>
+  <div>
+   <ul>
+    <? messages.forEach( r => { ?>
+        <li><?= r ?><br><br></li>
+        <? }) ?>
+        </ul>
+  </div>
+  </body>
+</html>
