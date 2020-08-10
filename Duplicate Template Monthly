@@ -1,0 +1,9 @@
+//This function duplicates a template sheet renames it 'Month Year' and the moves the sheet to position 1
+function resetMonthly() {
+  var spreadsheet = SpreadsheetApp.getActive()
+  var sheet = spreadsheet.getSheetByName("Template")
+  var date = Utilities.formatDate(new Date(), "America/Los_Angeles (Pacific time)", "MMMM YYYY")
+  sheet.copyTo(spreadsheet).setName(date)
+  spreadsheet.getSheetByName(date).activate()
+  spreadsheet.moveActiveSheet(1)
+  }
