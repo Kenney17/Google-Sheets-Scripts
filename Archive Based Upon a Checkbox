@@ -1,0 +1,21 @@
+//This function uses a checkbox to determine if a row of data needs to be archived to a seperate sheet then the function sorts the data.
+//Set function to run with a time based trigger
+function Archive() {
+  var spreadsheet = SpreadsheetApp.getActive()
+  var sheet = spreadsheet.getSheetByName("'Sheet Name'")
+  var lastRow = sheet.getLastRow()
+  for(var i = 2;i <= lastRow;i++) {
+    var gone = sheet.getRange(i, 9)
+    if(gone.isChecked() == true){
+      var donated = sheet.getRange(i, 1, 1, 9)
+      var donatedActivate = sheet.getRange(i, 1, 1, 9).activate()
+      var sheet2 = spreadsheet.setActiveSheet(spreadsheet.getSheetByName('Archive Sheet'), true)
+      var lastRowArchive = 'A' + (sheet2.getLastRow() + 1)
+      donated.copyTo(sheet2.getRange(lastRowArchive).activate(), SpreadsheetApp.CopyPasteType.PASTE_NORMAL, false)
+      donatedActivate.clear({contentsOnly: true, skipFilteredRows: true})
+    }
+    gone.insertCheckboxes()
+  }
+  sheet.sort(5)
+  spreadsheet.setActiveSheet(spreadsheet.getSheetByName('Archive Sheet'), true).sort(5)
+}
