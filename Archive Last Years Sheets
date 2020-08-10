@@ -1,0 +1,28 @@
+//Run this function. This function creates a monthly trigger on the 1st at 1am
+function archiveYearlyTrigger() {
+  ScriptApp.newTrigger("shouldTriggerRun")
+  .timeBased().onMonthDay(1).atHour(1).create()
+}
+//This function will run on January making the start time January 1st at 1am
+function shouldTriggerRun() {
+  var date = new Date()
+  if (date.getMonth() === 0) {
+    archiveYearly()
+  }  
+}
+//This function finds sheets with last years date and moves them to a destination spreadsheet
+function archiveYearly() {
+  var spreadsheet = SpreadsheetApp.getActive()
+  var target = SpreadsheetApp.openByUrl("'Destination URL'/edit")
+  var date = Utilities.formatDate(new Date(), "America/Los_Angeles (Pacific time)", "YYYY")
+  var lastYear = date - 1
+  var numSheets = spreadsheet.getSheets()
+  for(var i=1;i<numSheets.length;i++) {
+    var sheetID = spreadsheet.getSheets()[i]
+    var sheetName = sheetID.getSheetName()
+    if(sheetName.indexOf(lastYear) >= 0) {
+      sheetID.copyTo(target).setName(sheetName)
+      spreadsheet.deleteSheet(sheetID)
+    }
+  }
+}
