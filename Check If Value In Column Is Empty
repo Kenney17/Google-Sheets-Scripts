@@ -1,0 +1,16 @@
+//This function runs upon opening the spreadsheet
+//It checks if any cells in column C are empty if so then changes value in column D to "Blank"
+function onOpen(e) {
+  var spreadsheet = SpreadsheetApp.getActive()
+  var sheet = spreadsheet.getSheetByName("'Sheet Name")
+  var lastRow = sheet.getLastRow()
+  var range = sheet.getRange(2,3,lastRow,1)
+  var data = range.getValues()
+  for(var i=2; i<data.length; i++) {
+    var codes = sheet.getRange(i, 3)
+    var blank = codes.isBlank()
+    if(blank) {
+      sheet.getRange(i, 4).activateAsCurrentCell().setValue("Blank")
+    }
+  }
+}
