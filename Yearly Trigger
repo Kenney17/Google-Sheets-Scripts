@@ -1,0 +1,12 @@
+//This function when run will create a monthly trigger that is run on the 1st at 1am
+function createYearlyTrigger() {
+  ScriptApp.newTrigger("shouldTriggerRun")
+  .timeBased().onMonthDay(1).atHour(1).create()
+}
+//This will run your function on January making the trigger start January 1st at 1am
+function shouldTriggerRun() {
+  var date = new Date()
+  if (date.getMonth() === 0) {
+    [your function]()
+  }  
+}
